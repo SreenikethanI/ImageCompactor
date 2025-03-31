@@ -3,10 +3,10 @@
  */
 export async function loadImageFromFilePicker(filePicker, createBlobUrl=false) {
     const files = filePicker.files;
-    if (files.length != 1) {return;}
+    if (files.length != 1) {return null;}
     var bitmap;
     try {bitmap = await createImageBitmap(files[0]);}
-    catch (error) {return;}
+    catch (error) {return null;}
 
     const w = bitmap.width, h = bitmap.height;
     const canvas = new OffscreenCanvas(w, h);
@@ -23,9 +23,8 @@ export async function loadImageFromFilePicker(filePicker, createBlobUrl=false) {
  * @param {string} fileName
  */
 export async function saveImageData(imageData, fileName) {
-    const canvas = new OffscreenCanvas(imageData.width, imageData.height)
-    const ctx = canvas.getContext("2d");
-    ctx.putImageData(imageData, 0, 0);
+    const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+    canvas.getContext("2d").putImageData(imageData, 0, 0);
 
     const blob = await canvas.convertToBlob({type: "image/png"});
     const blobUrl = URL.createObjectURL(blob);
